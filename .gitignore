@@ -1,0 +1,9 @@
+Frames/
+Encodings/
+ClusteredFaces/
+models/
+encodings.pickle
+__pycache__
+main-bkp.py
+.spyproject/
+video/

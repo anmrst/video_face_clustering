@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Deep Video Face Clustering</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css" integrity="sha512-+WF6UMXHki/uCy0vATJzyA9EmAcohIQuwpNz0qEO+5UeE5ibPejMRdFuARSrl1trs3skqie0rY/gNiolfaef5w==" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.3.0/alpine.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+
+<body class="flex bg-gray-100 min-h-screen" x-data="{panel:false, menu:true}">
+
+  <div class="flex-grow text-gray-800 w-2/4">
+    <header class="flex items-center h-20 px-6 sm:px-10 bg-white">
+      <div class="flex flex-shrink-0 items-center ml-auto">
+        <!-- <button class="relative inline-flex items-center p-2 hover:bg-gray-100 focus:bg-gray-100 rounded-lg" @click="panel = !panel" @click.away="panel = false">
+          <span class="sr-only">User Menu</span>
+          <div class="hidden md:flex md:flex-col md:items-end md:leading-tight" >
+            <span class="font-semibold">Sinan AYDOĞAN</span>
+            <span class="text-sm text-gray-600">Quality Engineer</span>
+          </div>
+          <span class="h-12 w-12 ml-2 sm:ml-3 mr-2 bg-gray-100 rounded-full overflow-hidden">
+            <img src="https://randomuser.me/api/portraits/men/68.jpg" alt="user profile photo" class="h-full w-full object-cover">
+          </span>
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="hidden sm:block h-6 w-6 text-gray-300">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button> -->
+        <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+          <div class="flex w-full h-screen items-center justify-center bg-grey-lighter">
+              <label class="w-64 flex flex-col items-center p-2 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-white">
+                  <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                      <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                  </svg>
+                  <span class="mt-2 text-base leading-normal">Select a file</span>
+                  <input type='file' class="hidden" id="file-input" name="image" />
+              </label>
+          </div>
+        </form>
+        <div class="absolute top-20 bg-white border rounded-md p-2 w-56" x-show="panel" style="display:none">
+          <div class="p-2 hover:bg-blue-100 cursor-pointer">Profile</div>
+          <div class="p-2 hover:bg-blue-100 cursor-pointer">Messages</div>
+          <div class="p-2 hover:bg-blue-100 cursor-pointer">To-Do's</div>
+        </div>
+      </div>
+    </header>
+    <main class="p-6 sm:p-10 space-y-6" style="background-color: lightgrey;">
+      <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row justify-between">
+        <div class="mr-6">
+          <h1 class="text-4xl font-semibold mb-2">Deep Video Face Clustering</h1>
+        </div>
+      </div>
+      <section class="grid md:grid-cols-2 xl:grid-cols-2 gap-6 video-section">
+        <video clas="show_video" style="width: fit-content;height: fit-content;max-width: none;" autoplay="autoplay" controls muted>
+         <source src="http://localhost/python/face_cluster/video/Footage.mp4" type="video/mp4" >
+         <!-- <source src="movie.ogg" type="video/ogg"> -->
+         Your browser does not support the video tag.
+        </video>
+      </section>
+    </main>
+  </div>
+  <aside class="w-2/4" :class="{'hidden sm:flex sm:flex-col': window.outerWidth > 768}" style="width: 25%">
+    <a href="#" class="inline-flex items-center justify-center h-20 w-full bg-blue-600 hover:bg-blue-500 focus:bg-blue-500">
+
+
+<svg class="h-12 w-12 text-white" fill="currentColor" version="1.1" viewBox="0 0 215 215" stroke="none" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <title>Company logo</title>
+    <path transform="matrix(1.28 0 0 1.28 13.057 10.462)" d="m121.65 15.95-11.2 11.2q-5.9-4.75-12.8-7.3-5.7-2.35-10.05-3.15v-16.7h-22.8v16.35l-6.9 1.75q-8.1 2.55-16.15 7.5l-11.6-11.65-15.95 15.75 11.8 11.65q-6.1 8.85-8.85 19.65l-0.8 4.55h-16.35v21.65h16.75l2.15 7.45q2.35 7.9 7.3 14.4l-12 11.6 15.35 15.35 12-11.8 6.5 3.95q8.85 4.3 16.75 5.7v16.15h22.8v-16.55q8.05-1.8 15.75-5.7l5.55-3.35 11.4 11.4 16.15-16.15-11.25-11.4q5.1-7.85 7.5-16.9l1.2-4.15h16.1v-21.65h-15.75q-1.55-8.5-4.5-15.35l-3.55-5.9 12-12.05-16.55-16.3m-7.65 58.85q-0.05 15.9-11.25 27.55-11.6 11-27.55 11-16.15 0-27.55-11.4-11.2-10.85-11.2-27.15 0-15.95 11.2-27.55 11.8-11.25 27.55-11.25 15.75 0 27.55 11.25 11.2 11.8 11.25 27.55" stroke-linecap="square" stroke-width="1"/>
+    <path transform="matrix(.34872 0 0 .34872 83.818 78.7)" d="m144.75 65.137-94.088 94.088-50.662-50.663v-65.138l50.662 50.663 94.088-94.088v65.137"  stroke-linecap="square" stroke-width="6" />
+</svg>
+      <span class="text-white text-4xl ml-2" x-show="menu">Clustered Faces </span>
+    </a>
+
+    <h3 class="text-white text-2xl ml-2 number_of_faces" style="color:black">  </h3>
+    <div class="flex justify-between text-gray-500 bg-white-800 show_images">
+      <h3 class="text-white text-2xl ml-2 number_of_faces_individual" style="color:black">  </h3>
+
+
+
+    </div>
+  </aside>
+</body>
+
+</html>
+
+<script>
+function fetchdata(){
+
+      $.ajax({
+          url: "/get_first_image",
+          type: "GET",
+          dataType: "json",
+          success: function(response) {
+            //console.log('responseresponse',response.folder_data_list)
+              $(".show_images").empty();
+              console.log('hre0')
+              if(response.total_folders > 0){
+                console.log('hre1')
+                console.log(response)
+                jQuery('.number_of_faces').text('Number of Faces present in the video : '+response.total_folders)
+                response.folder_data_list.map((res) => {
+                  // console.log('res',res)
+                  //jQuery('.show_images').append('<div class="show_all_images" data-folderpath='+res.folder_path+'>'+res.first_image+'</div>');
+                  const filePath = res.folder_path;
+                  const parts = filePath.split('/');
+                  const faceName = parts[parts.length - 1];
+                  jQuery('.show_images').append('<div class="show_all_images" style="width: 50%;height: 300px;padding: 20px;overflow: hidden;" data-folderpath='+res.folder_path+'><img style="height:250px;" class="show_images_img" data-folderpath='+res.folder_path+' src="http://localhost/python/face_cluster/ClusteredFaces/'+faceName+'/'+res.first_image+'"></img><h6 style="text-align: center; color: black;"> Occurance : '+res.length+' </h6></div>');
+                });
+              }else{
+                console.log('here 2')
+                jQuery('.number_of_faces').text('Number of Faces present in the video : '+response.total_folders)
+              }
+          },
+          error: function() {
+              $(".show_images").html("No Data Found.");
+          }
+      });
+
+
+}
+
+$(document).ready(function() {
+    fetchdata()
+    let intervalID;
+    intervalID = setInterval(fetchdata, 2000);
+
+    document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("show_images_img")) {
+      clearInterval(intervalID);
+      console.log("Stopped fetching data.");
+    }
+  });
+    $('body').on('click', '.show_all_images', function() {
+        var videoName = $(event.target).data('folderpath');
+        $.ajax({
+            url: "/get_files",
+            type: "GET",
+            data: { videoName: videoName },
+            dataType: "json",
+            success: function(response) {
+              // console.log('responseresponse',response)
+                $(".show_images").empty();
+                if(response.isexists == 1){
+                  const filePath = videoName;
+                  const parts = filePath.split('/');
+                  const faceName = parts[parts.length - 1];
+                  jQuery('.number_of_faces_individual').text('Occurance of Face in the video : '+response.number_of_faces)
+                  response.files.map((res) =>
+                    jQuery('.show_images').append('<div class="show_all_images_from_folder"><img src="http://localhost/python/face_cluster/ClusteredFaces/'+faceName+'/'+res+'"></img>')
+                  );
+                }
+            },
+            error: function() {
+                $(".show_images").html("No Data Found.");
+            }
+        });
+    });
+
+});
+</script>
+<style type="text/css">
+  .block.text-2xl.font-bold {
+    word-break: break-all;
+  }
+  /* .show_images{
+    flex-wrap: wrap;
+    padding: 1rem 0;
+  } */
+  .show_all_images_from_folder{
+    width: 25%;
+    padding: 1rem;
+  }
+  /* .show_all_images {
+    width: 50%;
+    height: 300px;
+    overflow: hidden;
+
+  }
+ .show_images {
+    max-width: 100%;
+    height: inherit;
+    object-fit: cover;
+    flex-wrap: wrap;
+    padding: 20px;
+    /* display: block;
+    margin: auto; */
+  } */
+  .show_all_images {
+  width: 50%;
+  height: 300px;  /* Changed to auto */
+  overflow: hidden;
+}
+
+.show_images {
+  max-width: 100%;
+  height: 300px;  /* Changed to auto */
+  object-fit: cover;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+.show_images_img{
+
+}
+
+  h6 {
+    text-align: center;
+    color: black;
+    display: block;
+    margin: 0;  /* Removed any margin */
+  }
+  .show_video {
+    width: fit-content;
+    height: fit-content;
+    max-width: none;
+  }
+</style>
